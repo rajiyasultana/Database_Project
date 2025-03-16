@@ -1,0 +1,1 @@
+This php files needs to place in xaamp > hdcots.

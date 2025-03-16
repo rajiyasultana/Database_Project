@@ -9,7 +9,7 @@ public class Web : MonoBehaviour
     {
         // A correct website page.
         StartCoroutine(GetUsers("http://localhost/UnityBackend/GetUsers.php"));
-
+        StartCoroutine(Login("testUser", "12345"));
     }
 
     IEnumerator GetUsers(string uri)
@@ -34,6 +34,27 @@ public class Web : MonoBehaviour
                 case UnityWebRequest.Result.Success:
                     Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     break;
+            }
+        }
+    }
+
+    IEnumerator Login(string username, string password)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("loginUser", username);
+        form.AddField("loginPass", password);
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/UnityBackend/Login.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
             }
         }
     }
