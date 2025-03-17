@@ -10,11 +10,11 @@ public class Web : MonoBehaviour
         // A correct website page.
         //StartCoroutine(GetUsers("http://localhost/UnityBackend/GetUsers.php"));
         //StartCoroutine(Login("testUser", "12345"));
-        StartCoroutine(RegisterUser("testUser3", "123456"));
+        //StartCoroutine(RegisterUser("testUser3", "123456"));
 
     }
 
-    IEnumerator GetUsers(string uri)
+    public IEnumerator GetUsers(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
@@ -40,28 +40,28 @@ public class Web : MonoBehaviour
         }
     }
 
-    IEnumerator Login(string username, string password)
+    public IEnumerator Login(string username, string password)
     {
         WWWForm form = new WWWForm();
-        form.AddField("loginUser", username);
-        form.AddField("loginPass", password);
+            form.AddField("loginUser", username);
+            form.AddField("loginPass", password);
 
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/UnityBackend/Login.php", form))
-        {
-            yield return www.SendWebRequest();
+            using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/UnityBackend/Login.php", form))
+            {
+                yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError(www.error);
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError(www.error);
+                }
+                else
+                {
+                    Debug.Log(www.downloadHandler.text);
+                }
             }
-            else
-            {
-                Debug.Log(www.downloadHandler.text);
-            }
-        }
     }
 
-    IEnumerator RegisterUser(string username, string password)
+    public IEnumerator RegisterUser(string username, string password)
     {
         WWWForm form = new WWWForm();
         form.AddField("loginUser", username);

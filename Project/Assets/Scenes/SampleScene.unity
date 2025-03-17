@@ -267,6 +267,7 @@ GameObject:
   m_Component:
   - component: {fileID: 108068444}
   - component: {fileID: 108068443}
+  - component: {fileID: 108068445}
   m_Layer: 0
   m_Name: Test
   m_TagString: Untagged
@@ -301,6 +302,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &108068445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108068442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 379b3c4ef348b0e4a9231488058bef3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Web: {fileID: 0}
 --- !u!1 &276020976
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,6 +326,7 @@ GameObject:
   - component: {fileID: 276020977}
   - component: {fileID: 276020979}
   - component: {fileID: 276020978}
+  - component: {fileID: 276020980}
   m_Layer: 5
   m_Name: Login
   m_TagString: Untagged
@@ -378,6 +393,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 276020976}
   m_CullTransparentMesh: 1
+--- !u!114 &276020980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 276020976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 950aecfa674ca11419bb11b658044e91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UsernameInput: {fileID: 402553855}
+  PasswordInput: {fileID: 1594084608}
+  LoginButton: {fileID: 611099285}
 --- !u!1 &402553853
 GameObject:
   m_ObjectHideFlags: 0
@@ -1717,8 +1747,8 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 0
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
