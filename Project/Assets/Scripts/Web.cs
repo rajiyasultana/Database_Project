@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -14,10 +14,7 @@ public class Web : MonoBehaviour
 
     }
 
-    public void ShowUserItems()
-    {
-        StartCoroutine(GetItemsIDs(ObjectHolder.Instance.UserInfo.UserID));
-    }
+    
 
     public IEnumerator GetUsers(string uri)
     {
@@ -70,13 +67,16 @@ public class Web : MonoBehaviour
                     {
                             Debug.Log("Try Again");
                     }
-                     else
+                    else
                     {
                         //IF we logged in correctly
                         ObjectHolder.Instance.UserProfile.SetActive(true);
                         ObjectHolder.Instance.Login.gameObject.SetActive(false);
+                        Items items = FindObjectOfType<Items>();
+                        items.CreatItems();
+                        
 
-                     }
+                    }
                 }
             }
     }
@@ -104,8 +104,10 @@ public class Web : MonoBehaviour
 
     public IEnumerator GetItemsIDs(string userID, System.Action<string> callback)
     {
+        Debug.Log("GetItemsIDs function is being called");
+        Debug.Log("userID parameter received: " + userID);
         WWWForm form = new WWWForm();
-        form.AddField("userID", userID);
+        form.AddField("userID", userID); 
 
         string uri = "http://localhost/UnityBackend/GetItemsIDs.php";
 
@@ -116,20 +118,15 @@ public class Web : MonoBehaviour
             string[] pages = uri.Split('/');
             int page = pages.Length - 1;
 
-            switch (webRequest.result)
+            if (webRequest.result == UnityWebRequest.Result.Success)
             {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.Success:
-                    string jsonArray = webRequest.downloadHandler.text;
-                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    callback(jsonArray);
-                    break;
+                Debug.Log(webRequest.downloadHandler.text);
+                string jsonArray = webRequest.downloadHandler.text;
+                callback(jsonArray); // Ensure the callback gets called
+            }
+            else
+            {
+                Debug.LogError("Error fetching items: " + webRequest.error);
             }
         }
     }

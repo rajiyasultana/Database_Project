@@ -5,6 +5,8 @@ using UnityEngine;
 public class ObjectHolder : MonoBehaviour
 {
     public static ObjectHolder Instance;
+
+    
     public Web Web;
     public UserInfo UserInfo;
     public Login Login;

@@ -16,14 +16,14 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT password FROM userstable WHERE username = '". $loginUser . "'";
+$sql = "SELECT password, ID FROM userstable WHERE username = '". $loginUser . "'";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
   // output data of each row
   while($row = $result->fetch_assoc()) {
     if($row["password"] == $loginPass){
-        echo "Login Success.";
+        echo $row["ID"];
         //Get user's data here.
 
         //Get player info
