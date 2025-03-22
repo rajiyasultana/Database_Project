@@ -12,17 +12,21 @@ public class Items : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Items script started!");
         _creatItemsCallback = (jsonArrayString) =>
         {
+            Debug.Log("Callback received JSON response!");
             StartCoroutine(CreateItemsRoutine(jsonArrayString));
         };
+        CreatItems();
     }
 
     public void CreatItems()
     {
+        Debug.Log("CreatItems() called!");
         string userId = ObjectHolder.Instance.UserInfo.UserID;
         StartCoroutine(ObjectHolder.Instance.Web.GetItemsIDs(userId, _creatItemsCallback));
-        Debug.Log("GetUserId is called");
+        
     }
 
     IEnumerator CreateItemsRoutine(string jsonArrayString)
@@ -35,6 +39,8 @@ public class Items : MonoBehaviour
             Debug.LogError("No items found in JSON response!");
             yield break;
         }
+        Debug.Log("Raw JSON Response: " + jsonArrayString);
+
         for (int i = 0; i < jsonArray.Count; i++)
         {
             //create local variables
@@ -45,10 +51,17 @@ public class Items : MonoBehaviour
             //create a callback to get information from web.cs
             Action<string> getItemInfoCallback = (itemInfo) =>
             {
-                
+                Debug.Log("Item Info JSON: " + itemInfo);
                 isDone = true;
                 JSONArray tempArray = JSON.Parse(itemInfo) as JSONArray;
-                itemInfoJson = tempArray[0].AsObject;
+                if (tempArray != null && tempArray.Count > 0)
+                {
+                    itemInfoJson = tempArray[0].AsObject;
+                }
+                else
+                {
+                    Debug.LogError("Item JSON is empty or incorrect format!");
+                }
             };
 
             StartCoroutine(ObjectHolder.Instance.Web.GetItem(itemId, getItemInfoCallback));
@@ -64,9 +77,9 @@ public class Items : MonoBehaviour
             item.transform.localPosition = Vector3.zero;
 
             //Fill information
-            item.transform.Find("Name").GetComponent<Text>().text = itemInfoJson["name"];
-            item.transform.Find("Price").GetComponent<Text>().text = itemInfoJson["price"];
-            item.transform.Find("Description").GetComponent<Text>().text = itemInfoJson["description"];
+            item.transform.Find("Name").GetComponent<TMP_Text>().text = itemInfoJson["name"];
+            item.transform.Find("Price").GetComponent<TMP_Text>().text = itemInfoJson["price"];
+            item.transform.Find("Description").GetComponent<TMP_Text>().text = itemInfoJson["description"];
 
             //continue to the next item
 
