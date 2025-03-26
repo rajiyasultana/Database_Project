@@ -73,7 +73,7 @@ public class Web : MonoBehaviour
                         ObjectHolder.Instance.UserProfile.SetActive(true);
                         ObjectHolder.Instance.Login.gameObject.SetActive(false);
                         Items items = FindObjectOfType<Items>();
-                        items.CreatItems();
+                        items.CreateItems();
                         
 
                     }
@@ -158,6 +158,7 @@ public class Web : MonoBehaviour
                     string jsonArray = webRequest.downloadHandler.text;
                     Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     callback(jsonArray);
+
                     break;
             }
         }
