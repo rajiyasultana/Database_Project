@@ -122,7 +122,15 @@ public class Web : MonoBehaviour
             {
                 Debug.Log(webRequest.downloadHandler.text);
                 string jsonArray = webRequest.downloadHandler.text;
-                callback(jsonArray); // Ensure the callback gets called
+                if (callback != null)
+                {
+                    callback(jsonArray);
+                }
+                else
+                {
+                    Debug.LogWarning("Callback in GetItemsIDs was null!");
+                }
+
             }
             else
             {
