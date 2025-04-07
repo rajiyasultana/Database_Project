@@ -172,6 +172,37 @@ public class Web : MonoBehaviour
         }
     }
 
+    public IEnumerator SellItem(string itemID, string userID)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("itemID", itemID);
+        form.AddField("userID", userID);
+
+        string uri = "http://localhost/UnityBackend/SellItem.php";
+
+        using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, form)) // Use Post instead of Get
+        {
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    
+                    break;
+            }
+        }
+    }
 
 
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using SimpleJSON;
 using TMPro;
+using UnityEngine.UI;
 
 public class Items : MonoBehaviour
 {
@@ -60,14 +61,25 @@ public class Items : MonoBehaviour
 
             yield return new WaitUntil(() => isDone);
 
+            //Instansiate gameobject
             GameObject item = Instantiate(Resources.Load("Prefabs/Item") as GameObject);
             item.transform.SetParent(this.transform, false);
             item.transform.localScale = Vector3.one;
             item.transform.localPosition = Vector3.zero;
 
+            //Fill Information
             item.transform.Find("Name").GetComponent<TMP_Text>().text = itemInfoJson["Name"];
             item.transform.Find("Price").GetComponent<TMP_Text>().text = itemInfoJson["Price"];
             item.transform.Find("Description").GetComponent<TMP_Text>().text = itemInfoJson["Description"];
+
+            //Set sell button
+            item.transform.Find("SellButton").GetComponent<Button>().onClick.AddListener(() =>
+            {
+                string iId = itemId;
+                string uId = ObjectHolder.Instance.UserInfo.UserID;
+
+                StartCoroutine(ObjectHolder.Instance.Web.SellItem(iId, uId));
+            });
         }
     }
 }
