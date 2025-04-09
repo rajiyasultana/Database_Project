@@ -14,7 +14,46 @@ public class Web : MonoBehaviour
 
     }
 
-    
+    public IEnumerator GetItemIcon(string itemID, System.Action<Sprite> callback)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("itemID", itemID);
+
+        string uri = "http://localhost/UnityBackend/GetItemIcon.php";
+
+        using (UnityWebRequest webRequest = UnityWebRequest.Post(uri, form)) // Use Post instead of Get
+        {
+            yield return webRequest.SendWebRequest();
+
+            string[] pages = uri.Split('/');
+            int page = pages.Length - 1;
+
+            switch (webRequest.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    //reasults as byte array
+                    byte[] bytes = webRequest.downloadHandler.data;
+
+                    //create texture2D
+                    Texture2D texture = new Texture2D(2, 2);
+                    texture.LoadImage(bytes);
+
+                    //create sprite (to be placed in UI)
+                    Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                    callback(sprite);
+
+                    break;
+            }
+        }
+    }
+
 
     public IEnumerator GetUsers(string uri)
     {
@@ -72,7 +111,7 @@ public class Web : MonoBehaviour
                         //IF we logged in correctly
                         ObjectHolder.Instance.UserProfile.SetActive(true);
                         ObjectHolder.Instance.Login.gameObject.SetActive(false);
-                        Items items = FindObjectOfType<Items>();
+                        ItemManager items = FindObjectOfType<ItemManager>();
                         items.CreateItems();
                         
 
@@ -172,9 +211,10 @@ public class Web : MonoBehaviour
         }
     }
 
-    public IEnumerator SellItem(string itemID, string userID)
+    public IEnumerator SellItem(string ID, string itemID, string userID)
     {
         WWWForm form = new WWWForm();
+        form.AddField("ID", ID);
         form.AddField("itemID", itemID);
         form.AddField("userID", userID);
 

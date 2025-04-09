@@ -6,7 +6,7 @@ using SimpleJSON;
 using TMPro;
 using UnityEngine.UI;
 
-public class Items : MonoBehaviour
+public class ItemManager : MonoBehaviour
 {
     private Action<string> _createItemsCallback;
 
@@ -41,6 +41,8 @@ public class Items : MonoBehaviour
         {
             bool isDone = false;
             string itemId = jsonArray[i].AsObject["itemID"];
+            string id = jsonArray[i].AsObject["ID"];
+
             JSONObject itemInfoJson = new JSONObject();
 
             Action<string> getItemInfoCallback = (itemInfo) =>
@@ -62,23 +64,37 @@ public class Items : MonoBehaviour
             yield return new WaitUntil(() => isDone);
 
             //Instansiate gameobject
-            GameObject item = Instantiate(Resources.Load("Prefabs/Item") as GameObject);
-            item.transform.SetParent(this.transform, false);
-            item.transform.localScale = Vector3.one;
-            item.transform.localPosition = Vector3.zero;
+            GameObject itemGo = Instantiate(Resources.Load("Prefabs/Item") as GameObject);
+            Item item = itemGo.AddComponent<Item>();
+
+            item.ID = id;
+            item.ItemID = itemId;
+
+            itemGo.transform.SetParent(this.transform, false);
+            itemGo.transform.localScale = Vector3.one;
+            itemGo.transform.localPosition = Vector3.zero;
 
             //Fill Information
-            item.transform.Find("Name").GetComponent<TMP_Text>().text = itemInfoJson["Name"];
-            item.transform.Find("Price").GetComponent<TMP_Text>().text = itemInfoJson["Price"];
-            item.transform.Find("Description").GetComponent<TMP_Text>().text = itemInfoJson["Description"];
+            itemGo.transform.Find("Name").GetComponent<TMP_Text>().text = itemInfoJson["Name"];
+            itemGo.transform.Find("Price").GetComponent<TMP_Text>().text = itemInfoJson["Price"];
+            itemGo.transform.Find("Description").GetComponent<TMP_Text>().text = itemInfoJson["Description"];
+
+            //Create call back to get sprite from web.cs
+            Action<Sprite> getItemIconCallback = (downloadedSprite) =>
+            {
+                itemGo.transform.Find("Image").GetComponent<Image>().sprite = downloadedSprite;
+
+            };
+            StartCoroutine(ObjectHolder.Instance.Web.GetItemIcon(itemId, getItemIconCallback));
 
             //Set sell button
-            item.transform.Find("SellButton").GetComponent<Button>().onClick.AddListener(() =>
+            itemGo.transform.Find("SellButton").GetComponent<Button>().onClick.AddListener(() =>
             {
+                string idInInventory = id;
                 string iId = itemId;
-                string uId = ObjectHolder.Instance.UserInfo.UserID;
+                string userId = ObjectHolder.Instance.UserInfo.UserID;
 
-                StartCoroutine(ObjectHolder.Instance.Web.SellItem(iId, uId));
+                StartCoroutine(ObjectHolder.Instance.Web.SellItem(idInInventory, itemId, userId));
             });
         }
     }
